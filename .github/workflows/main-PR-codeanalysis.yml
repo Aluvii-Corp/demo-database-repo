@@ -1,21 +1,22 @@
-name: CI - Build code analysis for PRs on maaster branch
+name: CI - Build with code analysis for PRs on main
 
 on:
-    pull_request:
-        branches:
-        - master
+  pull_request:
+    branches:
+    - master
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
 
-        steps:
-        - uses: actions/checkout@v4
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v4
-          with:
-            dotnet-version: 8.0.x
+    runs-on: ubuntu-latest
 
-        - name: Build with code analysis
-          run: dotnet build -warnaserror DBTestCICD.sqlproj /p:RunSqlCodeAnalysis=true
-          working-directory: DBTestCICD
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Build with code analysis
+      run: dotnet build -warnaserror DBTestCICD.sqlproj /p:RunSqlCodeAnalysis=true
+      working-directory: DBTestCICD
