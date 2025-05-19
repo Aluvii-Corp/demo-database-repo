@@ -27,7 +27,7 @@ jobs:
 
         # generate a deployment report
       - name: 'Deploy dacpac'
-        run: sqlpackage /a:deployemntreport /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ secrets.PRODUCTION_CONNECTION_STRING }};" /OutputPath:DeployReport.xml
+        run: sqlpackage /a:deployemntreport /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ secrets.PRODUCTION_CONNECTION_STRING }};" /dsp:'deployment-script-prod.sql'
         working-directory: DBTestCICD
       
         # save the deployment script as an artifact
