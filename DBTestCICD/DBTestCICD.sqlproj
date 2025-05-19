@@ -56,5 +56,13 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="DBQuery" />
+    <Folder Include="DBQuery\Tables" />
+    <Folder Include="DBQuery\StoredProcedures" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="DBQuery\Tables\Transactions.sql" />
+    <Build Include="DBQuery\Tables\Payment.sql" />
+    <Build Include="DBQuery\StoredProcedures\SPGetTransactions.sql" />
   </ItemGroup>
 </Project>
