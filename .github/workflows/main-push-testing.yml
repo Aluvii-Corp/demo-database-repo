@@ -1,4 +1,4 @@
-name: CD 1 - deploy dev from main
+name: deploy on testing from main
 
 on:
   push:
@@ -19,14 +19,20 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+            dotnet-vesion: 8.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore
 
-      # deploy the sql project to dev
+        # generate a deployment report
       - name: 'Deploy dacpac'
-        run: sqlpackage /a:Publish /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ secrets.DEV_CONNECTION_STRING }}"
+        run: sqlpackage /a:deployemntreport /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ secrets.TESTING_CONNECTION_STRING }};" /OutputPath:DeployReport.xml
         working-directory: DBTestCICD
-
+        
+      # save the deployment script as an artifact
+      - name: 'Save deployment script'
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-script
+          path: DBTestCICD/deployment-script-testing.sql
