@@ -1,12 +1,21 @@
 name: deploy on testing from main
 
 on:
+  workflow_call:
+    inputs:
+      tenant_name:
+        description: Tenant name to deploy
+        type: string
+        required: true
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
     paths:
       - 'DBTestCICD/**'
+
+env: 
+  environment: 'production'
 
 jobs:
   build-and-deploy:
@@ -28,7 +37,7 @@ jobs:
 
         # generate a deployment report
       - name: 'Deploy dacpac'
-        run: sqlpackage /a:deployemntreport /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ secrets.PRODUCTION_CONNECTION_STRING }};" /dsp:'deployment-script-prod.sql'
+        run: sqlpackage /a:Publish /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ vars.PRODUCTION_CONNECTION_STRING_DATASOURCE }};Initial Catalog=${{ inputs.tenant_name }} ;Persist Security Info=True;${{ vars.PRODUCTION_CONNECTION_STRING_USERID }};${{ vars.PRODUCTION_CONNECTION_STRING_PASSWORD }};TrustServerCertificate=True;"  /dsp:'deployment-script-production.sql'
         working-directory: DBTestCICD
       
         # save the deployment script as an artifact
@@ -36,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: deployment-script
-          path: DBTestCICD/deployment-script-prod.sql
+          path: DBTestCICD/deployment-script-production.sql

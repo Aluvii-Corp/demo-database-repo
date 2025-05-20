@@ -1,12 +1,21 @@
 name: deploy on development from main
 
 on:
+  workflow_call:
+    inputs:
+      tenant_name:
+        description: Tenant name to deploy
+        type: string
+        required: true
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
     paths:
       - 'DBTestCICD/**'
+    
+env: 
+  environment: 'development'
 
 jobs:
   build-and-deploy:
@@ -28,7 +37,7 @@ jobs:
 
       # deploy the sql project to development
       - name: 'Deploy dacpac'
-        run: sqlpackage /a:Publish /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ secrets.DEV_CONNECTION_STRING }}"  /dsp:'deployment-script-development.sql'
+        run: sqlpackage /a:Publish /sf:'bin/Debug/DBTestCICD.dacpac' /tcs:"${{ vars.DEV_CONNECTION_STRING_DATASOURCE }};Initial Catalog=${{ inputs.tenant_name }} ;Persist Security Info=True;${{ vars.DEV_CONNECTION_STRING_USERID }};${{ vars.DEV_CONNECTION_STRING_PASSWORD }};TrustServerCertificate=True;"  /dsp:'deployment-script-development.sql'
         working-directory: DBTestCICD
 
       # save the deployment script as an artifact
