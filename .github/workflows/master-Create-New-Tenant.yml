@@ -1,4 +1,4 @@
-name: Create MSSQL Database
+name: Create New tenant
 
 on:
   workflow_dispatch:
