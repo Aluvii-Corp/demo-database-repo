@@ -1,0 +1,36 @@
+name: Create MSSQL Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      database_server:
+        description: 'Databse Server'
+        required: true      
+      user:
+        description: 'Database User'
+        required: true
+      password:
+        description: 'Database Password'
+        required: true
+      database_name:
+        description: 'Enter new Tenant Name'
+        required: true
+
+jobs:
+  create_db:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install SQL Server Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mssql-tools unixodbc-dev
+
+    - name: Create Database
+      env:
+        SA_USER: ${{ inputs.user }}
+        SA_PASSWORD: ${{ inputs.password }}
+      run: |
+        sqlcmd -S ${{ inputs.database_server }} -U "$SA_USER" -P "$SA_PASSWORD" -Q "CREATE DATABASE ${{ inputs.database_name }};"
+        #sqlcmd -S ${{ inputs.database_server }} -U "$SA_USER" -P "$SA_PASSWORD" -Q "CREATE LOGIN ${{ inputs.user }} WITH PASSWORD = '${{ inputs.password }}';"
+        #sqlcmd -S ${{ inputs.database_server }} -U "$SA_USER" -P "$SA_PASSWORD" -Q "USE ${{ inputs.database_name }}; CREATE USER ${{ inputs.user }} FOR LOGIN ${{ inputs.user }};"
+
